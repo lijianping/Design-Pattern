@@ -28,6 +28,30 @@ ReflectFactory& ReflectFactory::Instance()
 	return *reflect_;
 }
 
+bool ReflectFactory::Register(const std::string &name, CreateCallback createFn)
+{
+	return callbacks_.insert(
+		CallbackMap::value_type(name, createFn)).second;
+}
+
+bool ReflectFactory::Unregister(const std::string &name)
+{
+	return callbacks_.erase(name) == 1;
+}
+
+void* ReflectFactory::Create(const std::string &name)
+{
+	CallbackMap::const_iterator i = callbacks_.find(name);
+
+	if (i == callbacks_.end()) {
+		/* not found */
+		throw std::runtime_error("Unknown Class Name");
+	}
+
+	return (i->second)();
+}
+
+
 
 /**********************************************
  *                   private                  *

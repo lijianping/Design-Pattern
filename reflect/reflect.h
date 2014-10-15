@@ -16,9 +16,19 @@
 class ReflectFactory
 {
 public:
+	typedef void* (*CreateCallback)();
+
 	static ReflectFactory& Instance();
 
+	bool Register(const std::string &name, CreateCallback createFn);
+
+	bool Unregister(const std::string &name);
+
+	void* Create(const std::string &name);
+
 private:
+	typedef std::map<std::string, CreateCallback> CallbackMap;
+
 	ReflectFactory();
 
 	virtual ~ReflectFactory();
@@ -34,6 +44,8 @@ private:
 	static ReflectFactory *reflect_;
 
 	static bool destotyed_;
+
+	CallbackMap callbacks_;
 };
 
 #endif
