@@ -18,8 +18,13 @@ bool ReflectFactory::destotyed_ = false;
 ReflectFactory& ReflectFactory::Instance()
 {
 	if (!reflect_) {
-		Create();
+		if (destotyed_) {
+			OnDeadReference();
+		} else {
+			Create();
+		}
 	}
+
 	return *reflect_;
 }
 
@@ -35,7 +40,8 @@ ReflectFactory::ReflectFactory()
 
 ReflectFactory::~ReflectFactory()
 {
-
+	reflect_ = 0;
+	destotyed_ = true;
 }
 
 ReflectFactory::ReflectFactory(const ReflectFactory &rhs)
@@ -56,6 +62,5 @@ void ReflectFactory::Create()
 
 void ReflectFactory::OnDeadReference()
 {
-	reflect_ = 0;
-	destotyed_ = true;
+	throw std::runtime_error("Deaded Reference");
 }
