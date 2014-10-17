@@ -29,3 +29,6 @@
 
 # Swap files
 *.swp
+
+# Executables files
+test
